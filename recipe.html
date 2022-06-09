@@ -9,36 +9,39 @@
 </head>
 <body>
   <div id="app">
-    <h1>{{title}}</h1>
+    <div style="display: flex; justify-content: space-between; margin: 0 10px;">
+      <h1>{{title}}</h1>
+      <input @input="search($event);" placeholder="검색"/>
+    </div>
 
     <main>
       <section v-for="(category, index) in categories">
-        <h3>{{category.name}}</h3>
-        
-        <div v-for="item in category.items" style="margin: 0 20px;">
-          <hr />
-          <div style="display: flex; justify-content: space-between;">
-            <h4 :class="{active: item.shown}">{{item.name}}</h4>
-            <div>
-              <!-- <button v-show="item.shown" class="exit" @click="select('', category.idx, item.idx)">X</button> -->
-              <button class="button hot" v-if="typeof item.hot !== 'undefined' && item.shown !== 'hot'" @click="select('hot', category.idx, item.idx)">HOT</button>
-              <button class="button exit" v-else-if="typeof item.hot !== 'undefined' && item.shown === 'hot'" @click="select('', category.idx, item.idx)">X</button>
-              <button class="button" v-else disabled>HOT</button>
+        <div style="margin: 0 20px;">
+          <h2>{{category.name}}</h2>
+          <div v-for="item in category.items">
+            <hr v-show="item.name.includes(keyword)" />
+            <div v-if="item.name.includes(keyword)" style="display: flex; justify-content: space-between; align-items: center;">
+              <h4 :class="{active: item.shown}">{{item.name}}</h4>
+              <div>
+                <!-- <button v-show="item.shown" class="exit" @click="select('', category.idx, item.idx)">X</button> -->
+                <button class="button hot" v-if="typeof item.hot !== 'undefined' && item.shown !== 'hot'" @click="select('hot', category.idx, item.idx)">HOT</button>
+                <button class="button exit" v-else-if="typeof item.hot !== 'undefined' && item.shown === 'hot'" @click="select('', category.idx, item.idx)">X</button>
+                <button class="button" v-else disabled>HOT</button>
 
-              <button class="button ice" v-if="typeof item.ice !== 'undefined' && item.shown !== 'ice'" @click="select('ice', category.idx, item.idx)">ICE</button>
-              <button class="button exit" v-else-if="typeof item.ice !== 'undefined' && item.shown === 'ice'" @click="select('', category.idx, item.idx)">X</button>
-              <button class="button ice" v-else disabled>ICE</button>
+                <button class="button ice" v-if="typeof item.ice !== 'undefined' && item.shown !== 'ice'" @click="select('ice', category.idx, item.idx)">ICE</button>
+                <button class="button exit" v-else-if="typeof item.ice !== 'undefined' && item.shown === 'ice'" @click="select('', category.idx, item.idx)">X</button>
+                <button class="button ice" v-else disabled>ICE</button>
+              </div>
             </div>
+            <article v-if="item.shown === 'hot'" class="recipe hot">
+              <p v-for="desc in item.hot.recipe" class="desc">- {{desc}}</p>
+            </article>
+            <article v-if="item.shown === 'ice'" class="recipe ice">
+              <p v-for="desc in item.ice.recipe" class="desc">- {{desc}}</p>
+            </article>
           </div>
-          <article v-if="item.shown === 'hot'" class="recipe hot">
-            <p v-for="desc in item.hot.recipe" class="desc">- {{desc}}</p>
-          </article>
-          <article v-if="item.shown === 'ice'" class="recipe ice">
-            <p v-for="desc in item.ice.recipe" class="desc">- {{desc}}</p>
-          </article>
-          
+          <hr />
         </div>
-        <hr />
       </section>
     </main>
 
@@ -51,10 +54,10 @@
   <script>
     const {secret} = Qs.parse(location.search.slice(1));
 
-    if(secret !== 'taeksoolee') {
-      alert('please. check SECRET!')
-      history.back();
-    }
+    // if(secret !== 'taeksoolee') {
+    //   alert('please. check SECRET!')
+    //   history.back();
+    // }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="./db.js"></script>
@@ -66,6 +69,7 @@
         return {
           title: '메가커피',
           categories: getCategories(db),
+          keyword: '',
         };
       },
       mounted() {
@@ -80,7 +84,16 @@
 
           this.$forceUpdate();
         },
-      }
+        search(e) {
+          console.log(e.target.value);
+          this.keyword = e.target.value;
+        },
+      },
+      // watch: {
+      //   search(val) {
+      //     console.log(val);
+      //   },
+      // },
     })
   </script>
 </body>
