@@ -54,7 +54,7 @@
   <script>
     const {secret} = Qs.parse(location.search.slice(1));
     if(!location.host.includes('127.0.0.1') && !location.host.includes('localhost')) {
-      if(secret !== 'taeksoolee') {
+      if(secret.toLowerCase() !== 'taeksoolee') {
         alert('please. check SECRET!')
         history.back();
       }
