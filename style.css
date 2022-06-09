@@ -19,6 +19,7 @@ input {
   width: 100px;
   height: 40px;
   margin: 10px 0;
+  text-align: center;
 }
 
 .button {
