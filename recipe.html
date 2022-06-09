@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style.css">
+  <title>Mega Coffee Recipe</title>
+</head>
+<body>
+  <div id="app">
+    <h1>{{title}}</h1>
+
+    <main>
+      <section v-for="(category, index) in categories">
+        <h3>{{category.name}}</h3>
+        
+        <div v-for="item in category.items" style="margin: 0 20px;">
+          <hr />
+          <div style="display: flex; justify-content: space-between;">
+            <h4 :class="{active: item.shown}">{{item.name}}</h4>
+            <div>
+              <!-- <button v-show="item.shown" class="exit" @click="select('', category.idx, item.idx)">X</button> -->
+              <button class="button hot" v-if="typeof item.hot !== 'undefined' && item.shown !== 'hot'" @click="select('hot', category.idx, item.idx)">HOT</button>
+              <button class="button exit" v-else-if="typeof item.hot !== 'undefined' && item.shown === 'hot'" @click="select('', category.idx, item.idx)">X</button>
+              <button class="button" v-else disabled>HOT</button>
+
+              <button class="button ice" v-if="typeof item.ice !== 'undefined' && item.shown !== 'ice'" @click="select('ice', category.idx, item.idx)">ICE</button>
+              <button class="button exit" v-else-if="typeof item.ice !== 'undefined' && item.shown === 'ice'" @click="select('', category.idx, item.idx)">X</button>
+              <button class="button ice" v-else disabled>ICE</button>
+            </div>
+          </div>
+          <article v-if="item.shown === 'hot'" class="recipe hot">
+            <p v-for="desc in item.hot.recipe" class="desc">- {{desc}}</p>
+          </article>
+          <article v-if="item.shown === 'ice'" class="recipe ice">
+            <p v-for="desc in item.ice.recipe" class="desc">- {{desc}}</p>
+          </article>
+          
+        </div>
+        <hr />
+      </section>
+    </main>
+
+    <section>
+      
+    </section>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.5/qs.min.js" integrity="sha512-JduLFfiB5t9F2dYayaCCWObe/SeciiMhX2MHAKGvQ22crUA/Sb1l4elG5A7r7Bu1tP2rs1cU5lR1Irx/govVdg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    const {secret} = Qs.parse(location.search.slice(1));
+
+    if(secret !== 'taeksoolee') {
+      alert('please. check SECRET!')
+      history.back();
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="./db.js"></script>
+  <script src="./utils.js"></script>
+  <script>
+    const vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          title: '메가커피',
+          categories: getCategories(db),
+        };
+      },
+      mounted() {
+        this.$el.style.display = 'block';
+      },
+      methods: {
+        select(shown, categoryIdx, idx) {
+          const _categoryIdx = this.categories.findIndex((v) => v.idx === categoryIdx);
+          const _itemIdx = this.categories[_categoryIdx].items.findIndex((v) => v.idx === idx);
+
+          this.categories[_categoryIdx].items[_itemIdx].shown = shown;
+
+          this.$forceUpdate();
+        },
+      }
+    })
+  </script>
+</body>
+</html>
