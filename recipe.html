@@ -33,10 +33,10 @@
                 <button class="button ice" v-else disabled>ICE</button>
               </div>
             </div>
-            <article v-if="item.shown === 'hot'" class="recipe hot">
+            <article v-if="item.name.includes(keyword) && item.shown === 'hot'" class="recipe hot">
               <p v-for="desc in item.hot.recipe" class="desc">- {{desc}}</p>
             </article>
-            <article v-if="item.shown === 'ice'" class="recipe ice">
+            <article v-if="item.name.includes(keyword) && item.shown === 'ice'" class="recipe ice">
               <p v-for="desc in item.ice.recipe" class="desc">- {{desc}}</p>
             </article>
           </div>
