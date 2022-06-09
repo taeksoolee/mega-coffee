@@ -23,30 +23,41 @@
     <main>
       <section v-for="(category, index) in categories">
         <div style="margin: 0 20px;">
-          <h2>{{category.name}}</h2>
-          <div v-for="item in category.items">
-            <hr v-show="item.name.includes(keyword)" />
-            <div v-if="item.name.includes(keyword)" style="display: flex; justify-content: space-between; align-items: center;">
-              <h4 :class="{active: item.shown}">{{item.name}}</h4>
-              <div>
-                <!-- <button v-show="item.shown" class="exit" @click="select('', category.idx, item.idx)">X</button> -->
-                <button class="button hot" v-if="typeof item.hot !== 'undefined' && item.shown !== 'hot'" @click="select('hot', category.idx, item.idx)">HOT</button>
-                <button class="button exit" v-else-if="typeof item.hot !== 'undefined' && item.shown === 'hot'" @click="select('', category.idx, item.idx)">X</button>
-                <button class="button" v-else disabled>HOT</button>
-
-                <button class="button ice" v-if="typeof item.ice !== 'undefined' && item.shown !== 'ice'" @click="select('ice', category.idx, item.idx)">ICE</button>
-                <button class="button exit" v-else-if="typeof item.ice !== 'undefined' && item.shown === 'ice'" @click="select('', category.idx, item.idx)">X</button>
-                <button class="button ice" v-else disabled>ICE</button>
-              </div>
-            </div>
-            <article v-if="item.name.includes(keyword) && item.shown === 'hot'" class="recipe hot">
-              <p v-for="desc in item.hot.recipe" class="desc">- {{desc}}</p>
-            </article>
-            <article v-if="item.name.includes(keyword) && item.shown === 'ice'" class="recipe ice">
-              <p v-for="desc in item.ice.recipe" class="desc">- {{desc}}</p>
-            </article>
+          <div style="display: flex; justify-content: space-between;">
+            <h2>{{category.name}}</h2>
+            <button style="background: none; border: none; font-size: 20px;" @click="toggleCategory(category.idx);">
+              <i class="fa-solid fa-angle-down" v-show="!hiddenCategoryIdxs.includes(category.idx)"></i>
+              <i class="fa-solid fa-angle-up" v-show="hiddenCategoryIdxs.includes(category.idx)"></i>
+            </button>
           </div>
-          <hr />
+          <div v-if="hiddenCategoryIdxs.includes(category.idx)">
+            <div style="text-align: center;">...</div>
+          </div>
+          <div v-else>
+            <div v-for="item in category.items">
+              <hr v-show="item.name.includes(keyword)" />
+              <div v-if="item.name.includes(keyword)" style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 :class="{active: item.shown}">{{item.name}}</h4>
+                <div>
+                  <!-- <button v-show="item.shown" class="exit" @click="select('', category.idx, item.idx)">X</button> -->
+                  <button class="button hot" v-if="typeof item.hot !== 'undefined' && item.shown !== 'hot'" @click="select('hot', category.idx, item.idx)">HOT</button>
+                  <button class="button exit" v-else-if="typeof item.hot !== 'undefined' && item.shown === 'hot'" @click="select('', category.idx, item.idx)">X</button>
+                  <button class="button" v-else disabled>HOT</button>
+  
+                  <button class="button ice" v-if="typeof item.ice !== 'undefined' && item.shown !== 'ice'" @click="select('ice', category.idx, item.idx)">ICE</button>
+                  <button class="button exit" v-else-if="typeof item.ice !== 'undefined' && item.shown === 'ice'" @click="select('', category.idx, item.idx)">X</button>
+                  <button class="button ice" v-else disabled>ICE</button>
+                </div>
+              </div>
+              <article v-if="item.name.includes(keyword) && item.shown === 'hot'" class="recipe hot">
+                <p v-for="desc in item.hot.recipe" class="desc">- {{desc}}</p>
+              </article>
+              <article v-if="item.name.includes(keyword) && item.shown === 'ice'" class="recipe ice">
+                <p v-for="desc in item.ice.recipe" class="desc">- {{desc}}</p>
+              </article>
+            </div>
+            <hr />  
+          </div>
         </div>
       </section>
     </main>
@@ -77,6 +88,7 @@
           title: '메가커피',
           categories: getCategories(db),
           keyword: '',
+          hiddenCategoryIdxs: [],
         };
       },
       mounted() {
@@ -98,12 +110,22 @@
           this.keyword = '';
           this.$refs.searchInput.value = '';
         },
+        toggleCategory(categoryIdx) {
+          const _idx = this.hiddenCategoryIdxs.findIndex((idx) => idx === categoryIdx);
+
+          if(_idx === -1) { // push
+            this.hiddenCategoryIdxs = [
+              ...this.hiddenCategoryIdxs, 
+              categoryIdx
+            ];
+          } else { // pop
+            this.hiddenCategoryIdxs = [
+              ...this.hiddenCategoryIdxs.slice(0, _idx),
+              ...this.hiddenCategoryIdxs.slice(_idx+1),
+            ];
+          }
+        },
       },
-      // watch: {
-      //   search(val) {
-      //     console.log(val);
-      //   },
-      // },
     })
   </script>
 </body>
