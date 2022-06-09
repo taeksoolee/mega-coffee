@@ -54,10 +54,10 @@
   <script>
     const {secret} = Qs.parse(location.search.slice(1));
 
-    // if(secret !== 'taeksoolee') {
-    //   alert('please. check SECRET!')
-    //   history.back();
-    // }
+    if(secret !== 'taeksoolee') {
+      alert('please. check SECRET!')
+      history.back();
+    }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="./db.js"></script>
