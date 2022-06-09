@@ -53,10 +53,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.5/qs.min.js" integrity="sha512-JduLFfiB5t9F2dYayaCCWObe/SeciiMhX2MHAKGvQ22crUA/Sb1l4elG5A7r7Bu1tP2rs1cU5lR1Irx/govVdg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     const {secret} = Qs.parse(location.search.slice(1));
-
-    if(secret !== 'taeksoolee') {
-      alert('please. check SECRET!')
-      history.back();
+    if(!location.host.includes('127.0.0.1') && !location.host.includes('localhost')) {
+      if(secret !== 'taeksoolee') {
+        alert('please. check SECRET!')
+        history.back();
+      }
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
