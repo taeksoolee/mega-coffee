@@ -50,6 +50,18 @@ input {
   background-color: rgba(230,230,230,1);
 }
 
+.button.float {
+  position: fixed;
+  bottom: 8vh;
+  right: 8vw;
+
+  background-color: rgba(150,150,150,1);
+  border-radius: 200px;
+
+  width: 70px;
+  height: 70px;
+}
+
 .recipe {
   border: 1.5px solid rgba(230,230,230,1);
   /* border-radius: 10px; */

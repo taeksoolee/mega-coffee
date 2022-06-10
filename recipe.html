@@ -60,6 +60,7 @@
           </div>
         </div>
       </section>
+      <button class="button float" v-show="shownCount > 0" @click="reset();">X</button>
     </main>
 
     <section>
@@ -89,6 +90,7 @@
           categories: getCategories(db),
           keyword: '',
           hiddenCategoryIdxs: [],
+          shownCount: 0,
         };
       },
       mounted() {
@@ -100,6 +102,13 @@
           const _itemIdx = this.categories[_categoryIdx].items.findIndex((v) => v.idx === idx);
 
           this.categories[_categoryIdx].items[_itemIdx].shown = shown;
+
+          if(shown) {
+            this.shownCount = this.shownCount + 1;
+          } else {
+            this.shownCount = this.shownCount - 1;
+          }
+            
 
           this.$forceUpdate();
         },
@@ -124,6 +133,17 @@
               ...this.hiddenCategoryIdxs.slice(_idx+1),
             ];
           }
+        },
+        reset() {
+          const copied = JSON.parse(JSON.stringify(this.categories));
+
+          copied.forEach((category, i) => {
+            category.items.forEach((item, ii) => {
+              copied[i].items[ii].shown = '';
+            })
+          });
+
+          this.categories = copied;
         },
       },
     })
